@@ -7,11 +7,10 @@ public class PlayerMovement : MonoBehaviour
 {
     Rigidbody m_rb;
     public float thrust;
-    public float downthrust;
     public float drift;
     public float m_maxZVelocity;
     public float m_maxYVelocity;
-    private string dir;
+    public string dir;
     private bool canJump;
     private bool isTouchingVerticalWall;
     public bool hasWon;
@@ -22,7 +21,7 @@ public class PlayerMovement : MonoBehaviour
     {
         Physics.gravity = gameGravity;
         m_rb = GetComponent<Rigidbody> ();
-        dir = "left";
+        dir = "right";
         hasWon = false;
         hasDied = false;
         canJump = true;
@@ -178,7 +177,7 @@ public class PlayerMovement : MonoBehaviour
                 }
                 Move ();
             }
-            if (canJump && Input.GetKeyDown (KeyCode.Space))
+            if (canJump && Input.GetKeyDown (KeyCode.UpArrow))
             {
                 Jump ();
             }
