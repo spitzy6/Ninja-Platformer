@@ -5,16 +5,16 @@ using UnityEngine;
 
 public class PlayerMovement : MonoBehaviour
 {
+    public GameManager gameManager;
     Rigidbody m_rb;
     public float thrust;
     public float drift;
     public float m_maxZVelocity;
     public float m_maxYVelocity;
     public string dir;
-    private bool canJump;
-    private bool isTouchingVerticalWall;
-    public bool hasWon;
-    public bool hasDied;
+    public bool canJump;
+    public bool isTouchingVerticalWall;
+    private bool isMoving;
     public Vector3 gameGravity;
 
     void Start ()
@@ -22,23 +22,10 @@ public class PlayerMovement : MonoBehaviour
         Physics.gravity = gameGravity;
         m_rb = GetComponent<Rigidbody> ();
         dir = "right";
-        hasWon = false;
-        hasDied = false;
+        isMoving = false;
         canJump = true;
         isTouchingVerticalWall = false;
         gameObject.SetActive (true);
-    }
-
-    public void Win ()
-    {
-        Debug.Log ("you win" + hasWon);
-        gameObject.SetActive (false);
-    }
-
-    public void Respawn ()
-    {
-        Debug.Log ("Respawn: " + hasDied);
-        gameObject.SetActive (false);
     }
 
     // When initially touching wall
@@ -51,7 +38,7 @@ public class PlayerMovement : MonoBehaviour
         if (col.gameObject.CompareTag ("VerticalPlatforms"))
         {
             isTouchingVerticalWall = true;
-            canJump = true;
+            canJump = !isMoving;
         }
     }
 
@@ -64,7 +51,7 @@ public class PlayerMovement : MonoBehaviour
         }
         if (col.gameObject.CompareTag ("VerticalPlatforms"))
         {
-            canJump = true;
+            canJump = !isMoving;
             isTouchingVerticalWall = true;
         }
     }
@@ -79,8 +66,14 @@ public class PlayerMovement : MonoBehaviour
     // When goal reached
     public void OnTriggerEnter (Collider col)
     {
-        hasWon = col.gameObject.CompareTag ("Goal");
-        hasDied = col.gameObject.CompareTag ("Death");
+        if (col.gameObject.CompareTag ("Goal"))
+        {
+            gameManager.Win ();
+        }
+        if (col.gameObject.CompareTag ("Death"))
+        {
+            gameManager.Respawn ();
+        }
     }
 
     public void Face ()
@@ -159,8 +152,9 @@ public class PlayerMovement : MonoBehaviour
 
     void Update ()
     {
-        if (!(hasWon || hasDied))
+        if (Input.GetKey (KeyCode.LeftArrow) || Input.GetKey (KeyCode.RightArrow))
         {
+            isMoving = true;
             if (Input.GetKey (KeyCode.LeftArrow))
             {
                 if (dir != "left")
@@ -177,18 +171,14 @@ public class PlayerMovement : MonoBehaviour
                 }
                 Move ();
             }
-            if (canJump && Input.GetKeyDown (KeyCode.UpArrow))
-            {
-                Jump ();
-            }
-        }
-        else if (hasDied)
-        {
-            Respawn ();
         }
         else
         {
-            Win ();
+            isMoving = false;
+        }
+        if (canJump && Input.GetKeyDown (KeyCode.UpArrow))
+        {
+            Jump ();
         }
     }
 }
