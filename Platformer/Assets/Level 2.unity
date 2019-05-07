@@ -8096,7 +8096,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 22cb7f8ee65da494690bf457bf8d61cc, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  gameManager: {fileID: 0}
+  gameManager: {fileID: 1471778761}
   thrust: 100
   drift: 35
   m_maxZVelocity: 100
